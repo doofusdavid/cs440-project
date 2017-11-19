@@ -57,7 +57,7 @@ def validMoves(state):
     return validStates
 
 
-def makeMove(state, move, printMoves=True):
+def makeMove(state, move, printMoves=False):
     '''
     Takes a move and makes it 2x2 rubik's cube
     :param state: list of lists representing cube
@@ -88,18 +88,6 @@ def makeMove(state, move, printMoves=True):
     return newstate
 
 
-def unMakeMove(state, move):
-    '''
-    Reverses a move made by makeMove.  No longer used.
-    :param state: list of lists representing tower of hanoi state
-    :param move: move: tuple representing a move from (peg1,peg2)
-    :return: the state after the move was made
-    '''
-    item = state[move[1] - 1].pop(0)
-    state[move[0] - 1].insert(0, item)
-    return state
-
-
 def winner(state):
     '''
     Determines if a winning state occured
@@ -109,6 +97,8 @@ def winner(state):
     completeState = [[["Red", "Red"], ["Red", "Red"]], [["Blue", "Blue"], ["Blue", "Blue"]],
                      [["Yellow", "Yellow"], ["Yellow", "Yellow"]], [["Orange", "Orange"], ["Orange", "Orange"]],
                      [["White", "White"], ["White", "White"]], [["Green", "Green"], ["Green", "Green"]]]
+
+    return (state[LEFT][0]==state[LEFT][1]) and (state[FRONT][0]==state[FRONT][1]) and (state[TOP][0]==state[TOP][1]) and (state[BOTTOM][0]==state[BOTTOM][1]) and (state[RIGHT][0]==state[RIGHT][1]) and (state[BACK][0]==state[BACK][1])
     return state == completeState
 
 
@@ -137,11 +127,11 @@ def epsilonGreedy(epsilon, Q, state, validMovesF):
         return tuple(random.choice(goodMoves))
     else:
         # Greedy Move
-        Qs = np.array([Q.get((myTupler(state), tuple(m)), 0.0) for m in goodMoves])
+        Qs = np.array([Q.get(getTuple(state,m), 0.0) for m in goodMoves])
         return tuple(goodMoves[np.argmax(Qs)])
 
 
-def trainQ(nRepetitions, learningRate, epsilonDecayFactor, validMovesF, makeMoveF):
+def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMovesF, makeMoveF):
     '''
     Creates and fills a dictionary, Q, representing the (state,move) - value pairs which, if followed
     should create the shortest path to the solution.
@@ -166,7 +156,7 @@ def trainQ(nRepetitions, learningRate, epsilonDecayFactor, validMovesF, makeMove
         epsilon *= epsilonDecayRate
         step = 0
         # hardcoded start state
-        state = [[1, 2, 3], [], []]
+        state = startState
         done = False
 
         while not done:
@@ -180,8 +170,8 @@ def trainQ(nRepetitions, learningRate, epsilonDecayFactor, validMovesF, makeMove
             makeMoveF(stateNew, move)
 
             # if we haven't encountered this state,move combo, add it to Q
-            if (myTupler(state), move) not in Q:
-                Q[(myTupler(state), move)] = 0.0  # Initial Q value for new state, move
+            if getTuple(state, move) not in Q:
+                Q[getTuple(state, move)] = 0.0  # Initial Q value for new state, move
 
             # print if debugging
             if showMoves:
@@ -190,7 +180,7 @@ def trainQ(nRepetitions, learningRate, epsilonDecayFactor, validMovesF, makeMove
                 # We won!  backfill Q
                 if showMoves:
                     print('End State, we won!')
-                Q[(myTupler(state), move)] = -1.0
+                Q[getTuple(state, move)] = -1.0
                 done = True
                 # we're keeping a list of the number of steps it took for each winning solution, so add it here.
                 stepList.append(step)
@@ -198,9 +188,8 @@ def trainQ(nRepetitions, learningRate, epsilonDecayFactor, validMovesF, makeMove
             # update the Q which led us here using the learning factor, and the difference between the current state
             # and the old state
             if step > 1:
-                Q[(myTupler(stateOld), moveOld)] += rho * (
-                -1 + Q[(myTupler(state), move)] - Q[(myTupler(stateOld), moveOld)])
-
+                Q[getTuple(stateOld, moveOld)] += rho * (-1 + Q[getTuple(state, move)] - Q[getTuple(stateOld, moveOld)])
+                print("Q[{}]: ".format(getTuple(stateOld, moveOld)),Q[getTuple(stateOld, moveOld)])
             # Store the current state, move so we can access it for the next Q update
             stateOld, moveOld = state, move
             state = stateNew
@@ -217,7 +206,7 @@ def testQ(Q, maxSteps, validMovesF, makeMoveF):
     :param makeMoveF: function making a move on a state
     :return: list containing the states from start to finish
     '''
-    state = [[1, 2, 3], [], []]
+    state = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
     statePath = []
     statePath.append(state)
 
@@ -225,7 +214,7 @@ def testQ(Q, maxSteps, validMovesF, makeMoveF):
         if winner(state):
             return statePath
         goodMoves = validMovesF(state)
-        Qs = np.array([Q.get((myTupler(state), tuple(m)), 0.0) for m in goodMoves])
+        Qs = np.array([Q.get(getTuple(state, m), 0.0) for m in goodMoves])
         move = goodMoves[np.argmax(Qs)]
         nextState = copy.deepcopy(state)
         makeMoveF(nextState, move)
@@ -247,3 +236,11 @@ newstate = makeMove(newstate, "L'")
 
 print(getTuple(newstate,"L'"))
 
+newstate = completeState
+print(winner(newstate))
+for i in range(1):
+    newstate = makeMove(newstate,random.choice(validMoves(newstate)))
+
+Q, steps = trainQ(newstate, 10000, 0.5, 0.7, validMoves, makeMove)
+
+print(Q)
