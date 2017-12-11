@@ -28,18 +28,6 @@ def printState(state):
     print("-------------------------------")
 
 
-def findLongest(state):
-    '''
-    Finds the longest (highest) peg in Towers of Hanoi.  Used to display in printState
-    :param state: list of lists representing tower of hanoi state
-    :return: length of longest item
-    '''
-    length = 0
-    for item in state:
-        length = max(length, len(item))
-
-    return length
-
 
 def validMoves(state):
     '''
@@ -52,7 +40,7 @@ def validMoves(state):
     # evaluate if we need the front and back moves
     # validStates = ["U", "U'", "D", "D'", "R", "R'", "L", "L'", "F", "F'", "B", "B'"]
 
-    validStates = ["U", "U'", "D", "D'", "R", "R'", "L", "L'"]
+    validStates = ["U", "Uprime", "D", "Dprime", "R", "Rprime", "L", "Lprime"]
 
     return validStates
 
@@ -64,28 +52,28 @@ def makeMove(state, move, printMoves=False):
     :param move: possible rubik's cube move
     :return:the state after the move was made
     '''
-    newstate = copy.deepcopy(state)
+
     if move == "U":
-        newstate[LEFT][0], newstate[FRONT][0], newstate[RIGHT][0], newstate[BACK][0] = newstate[FRONT][0], newstate[RIGHT][0], newstate[BACK][0], newstate[LEFT][0]
-    if move == "U'":
-        newstate[FRONT][0], newstate[RIGHT][0], newstate[BACK][0], newstate[LEFT][0] = newstate[LEFT][0], newstate[FRONT][0], newstate[RIGHT][0], newstate[BACK][0]
+        state[LEFT][0], state[FRONT][0], state[RIGHT][0], state[BACK][0] = state[FRONT][0], state[RIGHT][0], state[BACK][0], state[LEFT][0]
+    if move == "Uprime":
+        state[FRONT][0], state[RIGHT][0], state[BACK][0], state[LEFT][0] = state[LEFT][0], state[FRONT][0], state[RIGHT][0], state[BACK][0]
     if move == "D":
-        newstate[LEFT][1], newstate[FRONT][1], newstate[RIGHT][1], newstate[BACK][1] = newstate[FRONT][1], newstate[RIGHT][1], newstate[BACK][1], newstate[LEFT][1]
-    if move == "D'":
-        newstate[FRONT][1], newstate[RIGHT][1], newstate[BACK][1], newstate[LEFT][1] = newstate[LEFT][1], newstate[FRONT][1], newstate[RIGHT][1], newstate[BACK][1]
+        state[LEFT][1], state[FRONT][1], state[RIGHT][1], state[BACK][1] = state[FRONT][1], state[RIGHT][1], state[BACK][1], state[LEFT][1]
+    if move == "Dprime":
+        state[FRONT][1], state[RIGHT][1], state[BACK][1], state[LEFT][1] = state[LEFT][1], state[FRONT][1], state[RIGHT][1], state[BACK][1]
     if move == "R":
-        newstate[TOP][0][1], newstate[TOP][1][1], newstate[FRONT][0][1], newstate[FRONT][1][1], newstate[BOTTOM][0][1], newstate[BOTTOM][1][1], newstate[BACK][0][1], newstate[BACK][1][1] = newstate[FRONT][0][1], newstate[FRONT][1][1], newstate[BOTTOM][0][1], newstate[BOTTOM][1][1], newstate[BACK][0][1], newstate[BACK][1][1],newstate[TOP][0][1], newstate[TOP][1][1]
-    if move == "R'":
-        newstate[FRONT][0][1], newstate[FRONT][1][1], newstate[BOTTOM][0][1], newstate[BOTTOM][1][1], newstate[BACK][0][1], newstate[BACK][1][1], newstate[TOP][0][1], newstate[TOP][1][1] = newstate[TOP][0][1], newstate[TOP][1][1], newstate[FRONT][0][1], newstate[FRONT][1][1], newstate[BOTTOM][0][1], newstate[BOTTOM][1][1], newstate[BACK][0][1], newstate[BACK][1][1]
+        state[TOP][0][1], state[TOP][1][1], state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1] = state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1],state[TOP][0][1], state[TOP][1][1]
+    if move == "Rprime":
+        state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1], state[TOP][0][1], state[TOP][1][1] = state[TOP][0][1], state[TOP][1][1], state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1]
     if move == "L":
-        newstate[TOP][0][0], newstate[TOP][1][0], newstate[FRONT][0][0], newstate[FRONT][1][0], newstate[BOTTOM][0][0], newstate[BOTTOM][1][0], newstate[BACK][0][0], newstate[BACK][1][0] = newstate[FRONT][0][0], newstate[FRONT][1][0], newstate[BOTTOM][0][0], newstate[BOTTOM][1][0], newstate[BACK][0][0], newstate[BACK][1][0],newstate[TOP][0][0], newstate[TOP][1][0]
-    if move == "L'":
-        newstate[FRONT][0][0], newstate[FRONT][1][0], newstate[BOTTOM][0][0], newstate[BOTTOM][1][0], newstate[BACK][0][0], newstate[BACK][1][0], newstate[TOP][0][0], newstate[TOP][1][0] = newstate[TOP][0][0], newstate[TOP][1][0], newstate[FRONT][0][0], newstate[FRONT][1][0], newstate[BOTTOM][0][0], newstate[BOTTOM][1][0], newstate[BACK][0][0], newstate[BACK][1][0]
+        state[TOP][0][0], state[TOP][1][0], state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0] = state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0],state[TOP][0][0], state[TOP][1][0]
+    if move == "Lprime":
+        state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0], state[TOP][0][0], state[TOP][1][0] = state[TOP][0][0], state[TOP][1][0], state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0]
 
     if printMoves:
-        printState(newstate)
+        printState(state)
 
-    return newstate
+    return state
 
 
 def winner(state):
@@ -98,8 +86,12 @@ def winner(state):
                      [["Yellow", "Yellow"], ["Yellow", "Yellow"]], [["Orange", "Orange"], ["Orange", "Orange"]],
                      [["White", "White"], ["White", "White"]], [["Green", "Green"], ["Green", "Green"]]]
 
-    return (state[LEFT][0]==state[LEFT][1]) and (state[FRONT][0]==state[FRONT][1]) and (state[TOP][0]==state[TOP][1]) and (state[BOTTOM][0]==state[BOTTOM][1]) and (state[RIGHT][0]==state[RIGHT][1]) and (state[BACK][0]==state[BACK][1])
-    return state == completeState
+    return faceComplete(state[LEFT]) and faceComplete(state[FRONT]) and faceComplete(state[TOP]) and faceComplete(state[BOTTOM]) and faceComplete(state[RIGHT]) and faceComplete(state[BACK])
+
+    # return state == completeState
+
+def faceComplete(face):
+    return (face[0][0]== face[0][1] == face[1][0] == face[1][1])
 
 
 def getTuple(state, move):
@@ -124,11 +116,11 @@ def epsilonGreedy(epsilon, Q, state, validMovesF):
     goodMoves = validMovesF(state)
     if np.random.uniform() < epsilon:
         # Random Move
-        return tuple(random.choice(goodMoves))
+        return random.choice(goodMoves)
     else:
         # Greedy Move
         Qs = np.array([Q.get(getTuple(state,m), 0.0) for m in goodMoves])
-        return tuple(goodMoves[np.argmax(Qs)])
+        return goodMoves[np.argmax(Qs)]
 
 
 def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMovesF, makeMoveF):
@@ -160,6 +152,8 @@ def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMove
         done = False
 
         while not done:
+            #if step % 100 == 0: print(".", end="")
+            #if step % 1000 == 0: print("Q length: ", len(Q))
             step += 1
             # grab either a random or best of the known moves
             move = epsilonGreedy(epsilon, Q, state, validMovesF)
@@ -178,8 +172,7 @@ def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMove
                 printState(stateNew)
             if winner(stateNew):
                 # We won!  backfill Q
-                if showMoves:
-                    print('End State, we won!')
+                # print('End State, we won!')
                 Q[getTuple(state, move)] = -1.0
                 done = True
                 # we're keeping a list of the number of steps it took for each winning solution, so add it here.
@@ -189,7 +182,7 @@ def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMove
             # and the old state
             if step > 1:
                 Q[getTuple(stateOld, moveOld)] += rho * (-1 + Q[getTuple(state, move)] - Q[getTuple(stateOld, moveOld)])
-                print("Q[{}]: ".format(getTuple(stateOld, moveOld)),Q[getTuple(stateOld, moveOld)])
+                #print("Q[",getTuple(stateOld, moveOld),"]: ",Q[getTuple(stateOld, moveOld)])
             # Store the current state, move so we can access it for the next Q update
             stateOld, moveOld = state, move
             state = stateNew
@@ -197,7 +190,7 @@ def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMove
     return Q, stepList
 
 
-def testQ(Q, maxSteps, validMovesF, makeMoveF):
+def testQ(Q, initialState, maxSteps, validMovesF, makeMoveF):
     '''
     Using the dictionary Q, and the initial state of the game, traverse and return the best path.
     :param Q: dictionary representing the (state,move) - value pairs which, if followed should create the shortest path to the solution.
@@ -206,7 +199,9 @@ def testQ(Q, maxSteps, validMovesF, makeMoveF):
     :param makeMoveF: function making a move on a state
     :return: list containing the states from start to finish
     '''
-    state = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
+    #state = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
+    state = initialState
+
     statePath = []
     statePath.append(state)
 
@@ -214,7 +209,7 @@ def testQ(Q, maxSteps, validMovesF, makeMoveF):
         if winner(state):
             return statePath
         goodMoves = validMovesF(state)
-        Qs = np.array([Q.get(getTuple(state, m), 0.0) for m in goodMoves])
+        Qs = np.array([Q.get(getTuple(state, m), -1000.0) for m in goodMoves])
         move = goodMoves[np.argmax(Qs)]
         nextState = copy.deepcopy(state)
         makeMoveF(nextState, move)
@@ -223,24 +218,25 @@ def testQ(Q, maxSteps, validMovesF, makeMoveF):
 
     return "No path found"
 
+# completeState = [[["Red", "Red"], ["Red", "Red"]], [["Blue", "Blue"], ["Blue", "Blue"]],
+#                  [["Yellow", "Yellow"], ["Yellow", "Yellow"]], [["Orange", "Orange"], ["Orange", "Orange"]],
+#                  [["White", "White"], ["White", "White"]], [["Green", "Green"], ["Green", "Green"]]]
+# print(winner(completeState))
+# makeMove(completeState, 'R', True)
+# print(winner(completeState))
+
 
 completeState = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
-
-printState(completeState)
-
-newstate = makeMove(completeState, "L")
-print(getTuple(newstate,"L'"))
-
-newstate = makeMove(newstate, "L'")
-
-
-print(getTuple(newstate,"L'"))
-
 newstate = completeState
-print(winner(newstate))
-for i in range(1):
-    newstate = makeMove(newstate,random.choice(validMoves(newstate)))
+for i in range(3):
+    move = random.choice(validMoves(newstate))
+    print("Move ", i, " was: ", move)
+    newstate = makeMove(newstate,move)
 
-Q, steps = trainQ(newstate, 10000, 0.5, 0.7, validMoves, makeMove)
+printState(newstate)
+Q, steps = trainQ(newstate, 1000, 0.5, 0.7, validMoves, makeMove)
+print(steps)
+path = testQ(Q, newstate, 20000, validMoves, makeMove)
 
-print(Q)
+for move in path:
+    printState(move)
