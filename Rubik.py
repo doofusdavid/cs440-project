@@ -1,6 +1,7 @@
 import copy as copy
 import numpy as np
 import random
+import time
 
 FRONT = 1
 LEFT = 0
@@ -144,6 +145,8 @@ def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMove
     showMoves = False
 
     for nGames in range(maxGames):
+        # if nGames % 10 == 0: print(".", end="")
+        # if nGames % 100 == 0: print("Q length: ", len(Q))
         # reduce the randomness every pass
         epsilon *= epsilonDecayRate
         step = 0
@@ -218,14 +221,6 @@ def testQ(Q, initialState, maxSteps, validMovesF, makeMoveF):
 
     return "No path found"
 
-# completeState = [[["Red", "Red"], ["Red", "Red"]], [["Blue", "Blue"], ["Blue", "Blue"]],
-#                  [["Yellow", "Yellow"], ["Yellow", "Yellow"]], [["Orange", "Orange"], ["Orange", "Orange"]],
-#                  [["White", "White"], ["White", "White"]], [["Green", "Green"], ["Green", "Green"]]]
-# print(winner(completeState))
-# makeMove(completeState, 'R', True)
-# print(winner(completeState))
-
-
 completeState = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
 newstate = completeState
 for i in range(3):
@@ -234,9 +229,16 @@ for i in range(3):
     newstate = makeMove(newstate,move)
 
 printState(newstate)
-Q, steps = trainQ(newstate, 1000, 0.5, 0.7, validMoves, makeMove)
+Q, steps = trainQ(newstate, 500, 0.5, 0.7, validMoves, makeMove)
 print(steps)
+startTime = time.time()
 path = testQ(Q, newstate, 20000, validMoves, makeMove)
+endTime = time.time()
 
-for move in path:
-    printState(move)
+print("Execution took: ", endTime-startTime, " seconds.")
+print("Mean of solution length: ", np.mean(steps))
+if path == "No path found":
+    print(path)
+else:
+    for move in path:
+        printState(move)
