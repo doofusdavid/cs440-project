@@ -222,12 +222,12 @@ def testQ(Q, initialState, maxSteps, validMovesF, makeMoveF):
         statePath.append(nextState)
         state = nextState
 
-    return "No path found"
+    return "No path found",movePath
 
-
+#
 completeState = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
 newstate = completeState
-for i in range(40):
+for i in range(30):
     move = random.choice(validMoves(newstate))
     print("Move ", i, " was: ", move)
     newstate = makeMove(newstate,move)
@@ -235,14 +235,15 @@ for i in range(40):
 
 printState(newstate)
 startTime = time.time()
-Q, steps = trainQ(newstate, 20000, 0.5, 0.7, validMoves, makeMove)
+Q, steps = trainQ(newstate, 2000, 0.5, 0.7, validMoves, makeMove)
 endTime = time.time()
 print(steps)
-path, moveList = testQ(Q, newstate, 200000, validMoves, makeMove)
+path, moveList = testQ(Q, newstate, 20000, validMoves, makeMove)
 
 print("Training took: ", endTime-startTime, " seconds.")
 print("Mean of solution length: ", np.mean(steps))
 print("Median of solution length: ", np.median(steps))
+print("Q length:", len(Q))
 if path == "No path found":
     print(path)
 else:
