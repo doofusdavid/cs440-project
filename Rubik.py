@@ -228,14 +228,15 @@ for i in range(3):
     print("Move ", i, " was: ", move)
     newstate = makeMove(newstate,move)
 
-printState(newstate)
-Q, steps = trainQ(newstate, 500, 0.5, 0.7, validMoves, makeMove)
-print(steps)
-startTime = time.time()
-path = testQ(Q, newstate, 20000, validMoves, makeMove)
-endTime = time.time()
 
-print("Execution took: ", endTime-startTime, " seconds.")
+printState(newstate)
+startTime = time.time()
+Q, steps = trainQ(newstate, 500, 0.5, 0.7, validMoves, makeMove)
+endTime = time.time()
+print(steps)
+path = testQ(Q, newstate, 20000, validMoves, makeMove)
+
+print("Training took: ", endTime-startTime, " seconds.")
 print("Mean of solution length: ", np.mean(steps))
 if path == "No path found":
     print(path)
