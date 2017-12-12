@@ -248,7 +248,7 @@ def getTuple3x3(state, move):
 
 completeState = [[["Red", "Red", "Red"],["Red","Red", "Red"],["Red","Red", "Red"]],[["Blue", "Blue","Blue"],["Blue", "Blue","Blue"],["Blue", "Blue","Blue"]],[["Yellow", "Yellow", "Yellow"],["Yellow", "Yellow", "Yellow"],["Yellow", "Yellow", "Yellow"]],[["Orange", "Orange", "Orange"],["Orange", "Orange", "Orange"],["Orange", "Orange", "Orange"]],[["White", "White", "White"],["White", "White", "White"],["White", "White", "White"]],[["Green", "Green", "Green"],["Green", "Green", "Green"],["Green", "Green", "Green"]]]
 newstate = completeState
-for i in range(5):
+for i in range(1):
     move = random.choice(validMoves(newstate))
     print("Move ", i, " was: ", move)
     newstate = makeMove3x3(newstate,move)
@@ -257,7 +257,7 @@ for i in range(5):
 printState3x3(newstate)
 
 startTime = time.time()
-Q, steps = trainQ(newstate, 4000, 0.5, 0.7, validMoves, makeMove3x3, winner3x3, getTuple3x3)
+Q, steps = trainQ(newstate, 10, 0.5, 0.7, validMoves, makeMove3x3, winner3x3, getTuple3x3)
 endTime = time.time()
 print(steps)
 path, moveList = testQ(Q, newstate, 20000, validMoves, makeMove3x3, winner3x3, getTuple3x3)
