@@ -28,26 +28,6 @@ def printState(state):
     print("\t\t", printFirstLetters(state[BOTTOM][1]))
     print("-------------------------------")
 
-def printFirstLetters3x3(pair):
-    return("{}\t{}\t{}\t".format(pair[0][:1],pair[1][:1],pair[2][:1]))
-
-
-def printState3x3(state):
-    '''
-    Prints a Tower of Hanoi state.  Now, with added pegs.
-    :param state: list of lists representing tower of hanoi state
-    :return: prints out the state nicely.
-    '''
-    print("\t\t\t", printFirstLetters3x3(state[TOP][0]))
-    print("\t\t\t", printFirstLetters3x3(state[TOP][1]))
-    print("\t\t\t", printFirstLetters3x3(state[TOP][2]))
-    print(printFirstLetters3x3(state[LEFT][0]), printFirstLetters3x3(state[FRONT][0]),printFirstLetters3x3(state[RIGHT][0]),printFirstLetters3x3(state[BACK][0]))
-    print(printFirstLetters3x3(state[LEFT][1]), printFirstLetters3x3(state[FRONT][1]),printFirstLetters3x3(state[RIGHT][1]),printFirstLetters3x3(state[BACK][1]))
-    print(printFirstLetters3x3(state[LEFT][2]), printFirstLetters3x3(state[FRONT][2]),printFirstLetters3x3(state[RIGHT][2]),printFirstLetters3x3(state[BACK][2]))
-    print("\t\t\t", printFirstLetters3x3(state[BOTTOM][0]))
-    print("\t\t\t", printFirstLetters3x3(state[BOTTOM][1]))
-    print("\t\t\t", printFirstLetters3x3(state[BOTTOM][2]))
-    print("-------------------------------")
 
 
 def validMoves(state):
@@ -66,6 +46,13 @@ def validMoves(state):
     return validStates
 
 
+def rotateFace(state,face, prime):
+    if not prime:
+        state[face][0][0], state[face][0][1], state[face][1][1], state[face][1][0] = state[face][1][0], state[face][0][0], state[face][0][1], state[face][1][1]
+    else:
+        state[face][1][0], state[face][0][0], state[face][0][1], state[face][1][1] = state[face][0][0], state[face][0][1], state[face][1][1], state[face][1][0]
+
+
 def makeMove(state, move, printMoves=False):
     '''
     Takes a move and makes it 2x2 rubik's cube
@@ -76,56 +63,49 @@ def makeMove(state, move, printMoves=False):
 
     if move == "U":
         state[LEFT][0], state[FRONT][0], state[RIGHT][0], state[BACK][0] = state[FRONT][0], state[RIGHT][0], state[BACK][0], state[LEFT][0]
+        rotateFace(state,TOP, False)
     if move == "Uprime":
         state[FRONT][0], state[RIGHT][0], state[BACK][0], state[LEFT][0] = state[LEFT][0], state[FRONT][0], state[RIGHT][0], state[BACK][0]
+        rotateFace(state, TOP, True)
     if move == "D":
         state[LEFT][1], state[FRONT][1], state[RIGHT][1], state[BACK][1] = state[FRONT][1], state[RIGHT][1], state[BACK][1], state[LEFT][1]
+        rotateFace(state, BOTTOM, False)
     if move == "Dprime":
         state[FRONT][1], state[RIGHT][1], state[BACK][1], state[LEFT][1] = state[LEFT][1], state[FRONT][1], state[RIGHT][1], state[BACK][1]
+        rotateFace(state, BOTTOM, True)
     if move == "R":
         state[TOP][0][1], state[TOP][1][1], state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1] = state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1],state[TOP][0][1], state[TOP][1][1]
+        rotateFace(state, RIGHT, False)
     if move == "Rprime":
         state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1], state[TOP][0][1], state[TOP][1][1] = state[TOP][0][1], state[TOP][1][1], state[FRONT][0][1], state[FRONT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[BACK][0][1], state[BACK][1][1]
+        rotateFace(state, RIGHT, True)
     if move == "L":
         state[TOP][0][0], state[TOP][1][0], state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0] = state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0],state[TOP][0][0], state[TOP][1][0]
+        rotateFace(state, LEFT, False)
     if move == "Lprime":
         state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0], state[TOP][0][0], state[TOP][1][0] = state[TOP][0][0], state[TOP][1][0], state[FRONT][0][0], state[FRONT][1][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BACK][0][0], state[BACK][1][0]
+        rotateFace(state, LEFT, True)
+    if move == "F":
+        state[TOP][1][0], state[TOP][1][1], state[RIGHT][0][0], state[RIGHT][0][1], state[BOTTOM][0][0], state[BOTTOM][1][0], state[LEFT][0][1], state[LEFT][1][1] = state[LEFT][0][1], state[LEFT][1][1],state[TOP][1][0], state[TOP][1][1], state[RIGHT][0][0], state[RIGHT][0][1], state[BOTTOM][0][0], state[BOTTOM][1][0]
+        rotateFace(state, FRONT, False)
+    if move == "Fprime":
+        state[LEFT][0][1], state[LEFT][1][1], state[TOP][1][0], state[TOP][1][1], state[RIGHT][0][0], state[RIGHT][0][
+            1], state[BOTTOM][0][0], state[BOTTOM][1][0] = state[TOP][1][0], state[TOP][1][1], state[RIGHT][0][0], state[RIGHT][0][1], state[BOTTOM][0][0], state[BOTTOM][1][0], state[LEFT][0][1], state[LEFT][1][1]
+        rotateFace(state,FRONT, True)
+    if move == "B":
+        state[TOP][0][0], state[TOP][0][1], state[RIGHT][1][0], state[RIGHT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[LEFT][0][0], state[LEFT][1][0] = state[LEFT][0][0], state[LEFT][1][0], state[TOP][0][0], state[TOP][0][1], state[RIGHT][1][0], state[RIGHT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1]
+        rotateFace(state, BACK, False)
+    if move == "Bprime":
+        state[LEFT][0][0], state[LEFT][1][0], state[TOP][0][0], state[TOP][0][1], state[RIGHT][1][0], state[RIGHT][1][
+            1], state[BOTTOM][0][1], state[BOTTOM][1][1] = state[TOP][0][0], state[TOP][0][1], state[RIGHT][1][0], state[RIGHT][1][1], state[BOTTOM][0][1], state[BOTTOM][1][1], state[LEFT][0][0], state[LEFT][1][0]
+        rotateFace(state, BACK, True)
+
 
     if printMoves:
         printState(state)
 
     return state
 
-
-def makeMove3x3(state, move, printMoves=False):
-    '''
-    Takes a move and makes it 2x2 rubik's cube
-    :param state: list of lists representing cube
-    :param move: possible rubik's cube move
-    :return:the state after the move was made
-    '''
-
-    if move == "U":
-        state[LEFT][0], state[FRONT][0], state[RIGHT][0], state[BACK][0] = state[FRONT][0], state[RIGHT][0], state[BACK][0], state[LEFT][0]
-    if move == "Uprime":
-        state[FRONT][0], state[RIGHT][0], state[BACK][0], state[LEFT][0] = state[LEFT][0], state[FRONT][0], state[RIGHT][0], state[BACK][0]
-    if move == "D":
-        state[LEFT][2], state[FRONT][2], state[RIGHT][2], state[BACK][2] = state[FRONT][2], state[RIGHT][2], state[BACK][2], state[LEFT][2]
-    if move == "Dprime":
-        state[FRONT][2], state[RIGHT][2], state[BACK][2], state[LEFT][2] = state[LEFT][2], state[FRONT][2], state[RIGHT][2], state[BACK][2]
-    if move == "R":
-        state[TOP][0][2], state[TOP][1][2], state[TOP][2][2], state[FRONT][0][2], state[FRONT][1][2], state[FRONT][2][2], state[BOTTOM][0][2], state[BOTTOM][1][2], state[BOTTOM][2][2], state[BACK][0][2], state[BACK][1][2], state[BACK][2][2] = state[FRONT][0][2], state[FRONT][1][2], state[FRONT][2][2], state[BOTTOM][0][2], state[BOTTOM][1][2], state[BOTTOM][2][2], state[BACK][0][2], state[BACK][1][2], state[BACK][2][2],state[TOP][0][2], state[TOP][1][2], state[TOP][2][2]
-    if move == "Rprime":
-        state[FRONT][0][2], state[FRONT][1][2], state[FRONT][2][2], state[BOTTOM][0][2], state[BOTTOM][1][2], state[BOTTOM][2][2], state[BACK][0][2], state[BACK][1][2], state[BACK][2][2], state[TOP][0][2], state[TOP][1][2], state[TOP][2][2] = state[TOP][0][2], state[TOP][1][2], state[TOP][2][2], state[FRONT][0][2], state[FRONT][1][2], state[FRONT][2][2], state[BOTTOM][0][2], state[BOTTOM][1][2], state[BOTTOM][2][2], state[BACK][0][2], state[BACK][1][2], state[BACK][2][2]
-    if move == "L":
-        state[TOP][0][0], state[TOP][1][0], state[TOP][2][0], state[FRONT][0][0], state[FRONT][1][0], state[FRONT][2][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BOTTOM][2][0], state[BACK][0][0], state[BACK][1][0], state[BACK][2][0] = state[FRONT][0][0], state[FRONT][1][0], state[FRONT][2][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BOTTOM][2][0], state[BACK][0][0], state[BACK][1][0], state[BACK][2][0],state[TOP][0][0], state[TOP][1][0], state[TOP][2][0]
-    if move == "Lprime":
-        state[FRONT][0][0], state[FRONT][1][0], state[FRONT][2][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BOTTOM][2][0], state[BACK][0][0], state[BACK][1][0], state[BACK][2][0], state[TOP][0][0], state[TOP][1][0], state[TOP][2][0] = state[TOP][0][0], state[TOP][1][0], state[TOP][2][0], state[FRONT][0][0], state[FRONT][1][0], state[FRONT][2][0], state[BOTTOM][0][0], state[BOTTOM][1][0], state[BOTTOM][2][0], state[BACK][0][0], state[BACK][1][0], state[BACK][2][0]
-
-    if printMoves:
-        printState(state)
-
-    return state
 
 def winner(state):
     '''
@@ -144,20 +124,6 @@ def faceComplete(face):
     return (face[0][0]== face[0][1] == face[1][0] == face[1][1])
 
 
-def winner3x3(state):
-        '''
-        Determines if a winning state occured
-        :param state: list of lists representing tower of hanoi state
-        :return: True if winning state, False otherwise.
-        '''
-
-        return faceComplete3x3(state[LEFT]) and faceComplete3x3(state[FRONT]) and faceComplete3x3(state[TOP]) and faceComplete3x3(
-            state[BOTTOM]) and faceComplete3x3(state[RIGHT]) and faceComplete3x3(state[BACK])
-
-
-def faceComplete3x3(face):
-    return (face[0][0]== face[0][1] == face[0][2] == face[1][0] == face[1][1] == face[1][2] == face[2][0] == face[2][1] == face[2][2])
-
 
 def getTuple(state, move):
     '''
@@ -166,16 +132,6 @@ def getTuple(state, move):
     :return: tuple representation of the state
     '''
     superTuple = tuple(tuple(tuple(s[0])+tuple(s[1])) for s in state)
-    return (superTuple, move)
-
-
-def getTuple3x3(state, move):
-    '''
-    Need immutable type for key to dictionary
-    :param state: list of lists representing tower of hanoi state
-    :return: tuple representation of the state
-    '''
-    superTuple = tuple(tuple(tuple(s[0])+tuple(s[1])+tuple(s[2])) for s in state)
     return (superTuple, move)
 
 
@@ -297,9 +253,12 @@ def testQ(Q, initialState, maxSteps, validMovesF, makeMoveF, winnerF):
 
     return "No path found",movePath
 
-#
-# completeState = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
-# newstate = completeState
+
+completeState = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
+newstate = completeState
+
+makeMove(newstate, "F", True)
+makeMove(newstate, "R", True)
 # for i in range(30):
 #     move = random.choice(validMoves(newstate))
 #     print("Move ", i, " was: ", move)
@@ -324,29 +283,4 @@ def testQ(Q, initialState, maxSteps, validMovesF, makeMoveF, winnerF):
 #         printState(path[i])
 #         print("Move: ", moveList[i])
 
-completeState = [[["Red", "Red", "Red"],["Red","Red", "Red"],["Red","Red", "Red"]],[["Blue", "Blue","Blue"],["Blue", "Blue","Blue"],["Blue", "Blue","Blue"]],[["Yellow", "Yellow", "Yellow"],["Yellow", "Yellow", "Yellow"],["Yellow", "Yellow", "Yellow"]],[["Orange", "Orange", "Orange"],["Orange", "Orange", "Orange"],["Orange", "Orange", "Orange"]],[["White", "White", "White"],["White", "White", "White"],["White", "White", "White"]],[["Green", "Green", "Green"],["Green", "Green", "Green"],["Green", "Green", "Green"]]]
-newstate = completeState
-for i in range(1):
-    move = random.choice(validMoves(newstate))
-    print("Move ", i, " was: ", move)
-    newstate = makeMove3x3(newstate,move)
 
-
-printState3x3(newstate)
-
-startTime = time.time()
-Q, steps = trainQ(newstate, 2000, 0.5, 0.7, validMoves, makeMove3x3, winner3x3)
-endTime = time.time()
-print(steps)
-path, moveList = testQ(Q, newstate, 20000, validMoves, makeMove3x3, winner3x3)
-
-print("Training took: ", endTime-startTime, " seconds.")
-print("Mean of solution length: ", np.mean(steps))
-print("Median of solution length: ", np.median(steps))
-print("Q length:", len(Q))
-if path == "No path found":
-    print(path)
-else:
-    for i in range(len(path)):
-        printState3x3(path[i])
-        print("Move: ", moveList[i])
