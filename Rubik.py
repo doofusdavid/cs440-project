@@ -41,7 +41,8 @@ def validMoves(state):
     # evaluate if we need the front and back moves
     # validStates = ["U", "U'", "D", "D'", "R", "R'", "L", "L'", "F", "F'", "B", "B'"]
 
-    validStates = ["U", "Uprime", "D", "Dprime", "R", "Rprime", "L", "Lprime"]
+    validStates = ["U", "Uprime", "D", "Dprime", "R", "Rprime", "L", "Lprime", "F", "Fprime", "B", "Bprime"]
+    validStates = ["U", "D", "R", "L", "F", "B"]
 
     return validStates
 
@@ -184,7 +185,7 @@ def trainQ(startState, nRepetitions, learningRate, epsilonDecayFactor, validMove
         state = startState
         done = False
 
-        while not done:
+        while not done and step < 10000:
             #if step % 100 == 0: print(".", end="")
             #if step % 1000 == 0: print("Q length: ", len(Q))
             step += 1
@@ -257,30 +258,28 @@ def testQ(Q, initialState, maxSteps, validMovesF, makeMoveF, winnerF):
 completeState = [[["Red", "Red"],["Red","Red"]],[["Blue", "Blue"],["Blue","Blue"]],[["Yellow", "Yellow"],["Yellow","Yellow"]],[["Orange", "Orange"],["Orange","Orange"]],[["White", "White"],["White","White"]],[["Green", "Green"],["Green","Green"]]]
 newstate = completeState
 
-makeMove(newstate, "F", True)
-makeMove(newstate, "R", True)
-# for i in range(30):
-#     move = random.choice(validMoves(newstate))
-#     print("Move ", i, " was: ", move)
-#     newstate = makeMove(newstate,move)
-#
-#
-# printState(newstate)
-# startTime = time.time()
-# Q, steps = trainQ(newstate, 2000, 0.5, 0.7, validMoves, makeMove)
-# endTime = time.time()
-# print(steps)
-# path, moveList = testQ(Q, newstate, 20000, validMoves, makeMove)
-#
-# print("Training took: ", endTime-startTime, " seconds.")
-# print("Mean of solution length: ", np.mean(steps))
-# print("Median of solution length: ", np.median(steps))
-# print("Q length:", len(Q))
-# if path == "No path found":
-#     print(path)
-# else:
-#     for i in range(len(path)):
-#         printState(path[i])
-#         print("Move: ", moveList[i])
+for i in range(20):
+    move = random.choice(validMoves(newstate))
+    print("Move ", i, " was: ", move)
+    newstate = makeMove(newstate,move)
+
+
+printState(newstate)
+startTime = time.time()
+Q, steps = trainQ(newstate, 500, 0.5, 0.7, validMoves, makeMove, winner)
+endTime = time.time()
+print(steps)
+path, moveList = testQ(Q, newstate, 20000, validMoves, makeMove, winner)
+
+print("Training took: ", endTime-startTime, " seconds.")
+print("Mean of solution length: ", np.mean(steps))
+print("Median of solution length: ", np.median(steps))
+print("Q length:", len(Q))
+if path == "No path found":
+    print(path)
+else:
+    for i in range(len(path)):
+        printState(path[i])
+        print("Move: ", moveList[i])
 
 
